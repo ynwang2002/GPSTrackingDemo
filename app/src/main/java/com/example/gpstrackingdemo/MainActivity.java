@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     public static final int FAST_UPDATE_INTERVAL = 5;
     private static final int PERMISSIONS_FINE_LOCATION = 99;
 
-    TextView tv_lat, tv_lon, tv_altitude, tv_accuracy,tv_speed, tv_sensor,tv_updates,tv_address, tv_wayPointCounts;
+    TextView tv_lat, tv_lon, tv_altitude, tv_accuracy, tv_speed, tv_sensor, tv_updates, tv_address, tv_wayPointCounts;
     Button btn_newWaypoint, btn_showWayPointList, btn_showMap;
 
     Switch sw_locationupdate, sw_gps;
@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
         locationRequest.setPriority(locationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
-        locationCallBack = new LocationCallback(){
+        locationCallBack = new LocationCallback() {
 
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 // get the gps location
 
                 // add the new location to the global llist;
-                MyApplication myApplication = (MyApplication)getApplicationContext();
+                MyApplication myApplication = (MyApplication) getApplicationContext();
                 savedLocations = myApplication.getMyLocations();
                 savedLocations.add(currentLocation);
 
@@ -122,11 +122,10 @@ public class MainActivity extends AppCompatActivity {
 
         sw_gps.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                if(sw_gps.isChecked()){
+                if (sw_gps.isChecked()) {
                     locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
                     tv_sensor.setText("Using GPS sensors");
-                }
-                else{
+                } else {
                     locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
                     tv_sensor.setText("Using Tower + WIFI");
                 }
@@ -136,10 +135,9 @@ public class MainActivity extends AppCompatActivity {
         sw_locationupdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(sw_locationupdate.isChecked()) {
+                if (sw_locationupdate.isChecked()) {
                     startLocationUpdates();
-                }
-                else {
+                } else {
                     stopLocationUpdates();
                 }
             }
@@ -163,6 +161,16 @@ public class MainActivity extends AppCompatActivity {
     private void startLocationUpdates() {
 
         tv_updates.setText("Location is being tracked");
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallBack, null);
         updateGPS();
     }
